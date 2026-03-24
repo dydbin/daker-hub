@@ -19,3 +19,4 @@ codex.boundaries.yaml
 codex.commands.json
 codex.project.yaml
 docs/ops/
+.vercel

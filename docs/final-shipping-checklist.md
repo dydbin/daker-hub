@@ -6,8 +6,8 @@
 
 ## 제출 패키지
 - 기획서, 웹, PDF 첫 문장 동일
-- GitHub 저장소 링크 준비
-- Vercel 배포 URL 준비
+- GitHub 저장소 링크 준비: `https://github.com/dydbin/daker-hub`
+- Vercel 배포 URL 준비: `https://daker-hub-psi.vercel.app`
 - PDF 변환본 준비
 
 ## 완성도

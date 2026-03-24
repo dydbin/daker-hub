@@ -170,8 +170,8 @@ Daker Hub는 해커톤 탐색, 팀 모집, 랭킹, Judge Preview를 한 흐름�
 - 심사자는 공개 URL로 확인하고, 운영 비밀값은 제출물에 넣지 않습니다.
 
 ### 제출 직전 입력 항목
-- GitHub 저장소 링크: 제출 직전 최신 링크 입력
-- Vercel 배포 URL: 제출 직전 최신 URL 입력
+- GitHub 저장소 링크: `https://github.com/dydbin/daker-hub`
+- Vercel 배포 URL: `https://daker-hub-psi.vercel.app`
 - PDF 첫 장 메시지: 본 문서의 공통 한 줄 메시지와 동일하게 유지
 
 ## 10. 최종 정리
