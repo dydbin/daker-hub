@@ -33,7 +33,8 @@ export function HackathonTeamSection({
   hackathonSlug,
   myParticipation,
   teams,
-  visitorId
+  visitorId,
+  turnstileSiteKey = ""
 }) {
   const [showTeams, setShowTeams] = useState(false);
   const hasMyParticipation = Boolean(myParticipation);
@@ -159,7 +160,7 @@ export function HackathonTeamSection({
                     {joinableTeam ? <JoinTeamButton teamId={teamId} /> : null}
                     {team.owner_id === visitorId ? <p className="inline-message">내가 만든 팀 글입니다.</p> : null}
                   </div>
-                  {team.owner_id !== visitorId ? <MessageForm teamId={teamId} /> : null}
+                  {team.owner_id !== visitorId ? <MessageForm teamId={teamId} turnstileSiteKey={turnstileSiteKey} /> : null}
                 </article>
               );
             })}

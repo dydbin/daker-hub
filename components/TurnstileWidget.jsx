@@ -10,8 +10,7 @@ function getTurnstileApi() {
   return window.turnstile ?? null;
 }
 
-export function TurnstileWidget({ onTokenChange, resetKey = 0 }) {
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+export function TurnstileWidget({ onTokenChange, resetKey = 0, siteKey = "" }) {
   const containerRef = useRef(null);
   const widgetIdRef = useRef(null);
   const [scriptReady, setScriptReady] = useState(false);

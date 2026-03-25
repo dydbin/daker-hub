@@ -11,10 +11,11 @@ export default async function LoginPage({ searchParams }) {
   const returnTo = typeof params.returnTo === "string" && params.returnTo.startsWith("/") ? params.returnTo : "/mypage";
   const cookieStore = await cookies();
   const session = await getViewerSession(cookieStore);
+  const turnstileSiteKey = process.env.TURNSTILE_SITE_KEY ?? "";
 
   if (session.isAuthenticated) {
     redirect(returnTo);
   }
 
-  return <AuthPanel mode="login" returnTo={returnTo} />;
+  return <AuthPanel mode="login" returnTo={returnTo} turnstileSiteKey={turnstileSiteKey} />;
 }

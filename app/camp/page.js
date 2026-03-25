@@ -40,6 +40,7 @@ export default async function CampPage({ searchParams }) {
   const params = await searchParams;
   const cookieStore = await cookies();
   const session = await getViewerSession(cookieStore);
+  const turnstileSiteKey = process.env.TURNSTILE_SITE_KEY ?? "";
   const portal = await loadPortalData(session.userId);
   const hackathonSlug = params.hackathon ?? params.hackathons ?? "";
   const mode = params.mode === "create" ? "create" : "browse";
@@ -252,7 +253,7 @@ export default async function CampPage({ searchParams }) {
                         </div>
                       </div>
                     ) : (
-                      <MessageForm teamId={team.id} />
+                      <MessageForm teamId={team.id} turnstileSiteKey={turnstileSiteKey} />
                     )}
                   </article>
                 );

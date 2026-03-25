@@ -195,6 +195,7 @@ export default async function HackathonDetailPage({ params }) {
   const routeParams = await params;
   const cookieStore = await cookies();
   const session = await getViewerSession(cookieStore);
+  const turnstileSiteKey = process.env.TURNSTILE_SITE_KEY ?? "";
   const pageData = await loadHackathonPageData(session.userId, routeParams.slug);
 
   if (!pageData) notFound();
@@ -482,6 +483,7 @@ export default async function HackathonDetailPage({ params }) {
             myParticipation={myParticipation}
             teams={teams}
             visitorId={session.userId}
+            turnstileSiteKey={turnstileSiteKey}
           />
         </section>
 

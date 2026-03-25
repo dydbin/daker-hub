@@ -419,14 +419,14 @@ export function CampCreatePanel({ defaultHackathonSlug = "", hackathonOptions = 
   );
 }
 
-export function MessageForm({ teamId }) {
+export function MessageForm({ teamId, turnstileSiteKey = "" }) {
   const router = useRouter();
   const [body, setBody] = useState("");
   const [message, setMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [isPending, startTransition] = useTransition();
-  const turnstileEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  const turnstileEnabled = Boolean(turnstileSiteKey);
 
   function onSubmit(event) {
     event.preventDefault();
@@ -468,7 +468,7 @@ export function MessageForm({ teamId }) {
         maxLength={MESSAGE_INPUT_LIMITS.body}
         placeholder="팀에 남길 문의 내용을 적으세요."
       />
-      <TurnstileWidget onTokenChange={setTurnstileToken} resetKey={turnstileResetKey} />
+      <TurnstileWidget onTokenChange={setTurnstileToken} resetKey={turnstileResetKey} siteKey={turnstileSiteKey} />
       <button className="button button--ghost" disabled={isPending} type="submit">
         {isPending ? "전송 중..." : "문의 남기기"}
       </button>

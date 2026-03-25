@@ -17,7 +17,7 @@ function submitJson(url, body) {
   });
 }
 
-export function AuthPanel({ mode = "login", returnTo = "/mypage" }) {
+export function AuthPanel({ mode = "login", returnTo = "/mypage", turnstileSiteKey = "" }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
@@ -38,7 +38,7 @@ export function AuthPanel({ mode = "login", returnTo = "/mypage" }) {
     ? "로그인 후 팀 모집, 문의, 제출 저장 같은 작성 기능을 사용할 수 있습니다."
     : "계정을 만들면 바로 로그인되고, 내 프로필과 비공개 설정을 이어서 관리할 수 있습니다.";
   const headline = isLogin ? "대회 참여 전용 계정으로 바로 이어서 작업합니다." : "해커톤 활동을 저장하고 팀 단위로 안전하게 관리합니다.";
-  const turnstileEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  const turnstileEnabled = Boolean(turnstileSiteKey);
 
   function update(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -162,7 +162,7 @@ export function AuthPanel({ mode = "login", returnTo = "/mypage" }) {
                   required
                 />
               </label>
-              <TurnstileWidget onTokenChange={setTurnstileToken} resetKey={turnstileResetKey} />
+              <TurnstileWidget onTokenChange={setTurnstileToken} resetKey={turnstileResetKey} siteKey={turnstileSiteKey} />
               <button className="button auth-form__submit" disabled={isPending} type="submit">
                 {isPending ? "처리 중..." : submitLabel}
               </button>
