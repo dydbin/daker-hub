@@ -1,0 +1,25 @@
+# Generated files
+node_modules/
+.next/
+.env*
+.env.local
+.DS_Store
+
+# Vercel
+.vercel/
+
+# Local/private docs
+docs/
+
+# Local Codex / workspace-only metadata
+.codex-root
+AGENTS.md
+PLANS.md
+CONTEXT.md
+CHECKLIST.md
+STATUS.md
+codex.boundaries.yaml
+codex.commands.json
+codex.project.yaml
+docs/ops/
+.vercel

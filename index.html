@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daker Hub | Public Hackathon Portal Prototype</title>
+  <meta
+    name="description"
+    content="Daker Hub는 해커톤 탐색, 팀 모집, 랭킹, Judge Preview를 한 흐름으로 묶은 공개 해커톤 포털입니다."
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <a href="#/">Daker Hub</a>
+      <span class="tag">Public Hackathon Portal</span>
+    </div>
+    <nav class="nav">
+      <a href="#/" data-link>메인</a>
+      <a href="#/hackathons" data-link>해커톤</a>
+      <a href="#/camp" data-link>캠프</a>
+      <a href="#/rankings" data-link>랭킹</a>
+    </nav>
+  </header>
+
+  <main id="app" class="app" aria-live="polite">
+    <!-- 동적 컨텐츠 삽입 -->
+  </main>
+
+  <footer class="footer">
+    <p>2026 Daker Hub prototype · Source-backed facts + explicit product assumptions</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

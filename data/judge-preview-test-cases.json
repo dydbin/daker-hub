@@ -1,0 +1,150 @@
+{
+  "hackathon": {
+    "slug": "daker-handover-2026-03",
+    "title": "긴급 인수인계 해커톤: 명세서만 보고 구현하라",
+    "detail": {
+      "sections": {
+        "submit": {
+          "submissionItems": [
+            { "key": "plan" },
+            { "key": "web" },
+            { "key": "pdf" }
+          ]
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "minimal",
+      "label": "필수 입력만 있는 저장본",
+      "submission": {
+        "project_title": "Bare Minimum",
+        "team_participants": "solo",
+        "service_overview": "",
+        "page_composition": "",
+        "system_composition": "",
+        "core_function_spec": "",
+        "user_flow": "",
+        "development_plan": "제출 직전 최소 입력만 저장한 상태"
+      },
+      "meta": {
+        "extensionIdea": "",
+        "verificationPlan": "",
+        "checklist": {
+          "dataDrivenRendering": false,
+          "filterSortWorking": false,
+          "emptyStateReady": false,
+          "responsiveReady": false,
+          "errorHandlingReady": false,
+          "loadingReady": false,
+          "accessibilityReady": false,
+          "reviewerAccessReady": false,
+          "noSecretExposure": false,
+          "publicUrlReady": false,
+          "pdfReady": false
+        }
+      },
+      "expect": {
+        "minTotal": 0,
+        "maxTotal": 12,
+        "mustIncludeImprovements": [
+          "데이터 기반 렌더링",
+          "필터/정렬",
+          "심사자 키 없는 접근"
+        ],
+        "mustHaveBadChecks": [
+          "데이터 기반 렌더링 점검",
+          "공개 배포 URL 준비"
+        ]
+      }
+    },
+    {
+      "id": "documented-but-unverified",
+      "label": "문서는 충분하지만 구현 self-check가 비어 있는 저장본",
+      "submission": {
+        "project_title": "Docs Heavy",
+        "team_participants": "Frontend, Designer",
+        "service_overview": "해커톤 참가자가 명세서를 빠르게 이해하고, 팀 모집과 제출 준비를 한 흐름 안에서 이어갈 수 있도록 포털 구조와 보조 기능을 설명합니다. 서비스 가치와 핵심 문제를 함께 적습니다.",
+        "page_composition": "메인, 해커톤 목록, 상세, Camp, 팀 보드, 랭킹, MyPage의 역할과 연결 구조를 문서형으로 충분히 설명합니다. 각 페이지가 무엇을 보여주고 어디로 이동하는지도 함께 적습니다.",
+        "system_composition": "Next.js 화면, API route, 더미 데이터, Supabase 공유 상태, 세션 인증, Vercel 배포 구조를 설명합니다. 어떤 입력이 어디에 저장되고 어떻게 다시 읽히는지도 적습니다.",
+        "core_function_spec": "탐색, 팀 모집, 문의, 팀 보드, 제출 저장, Judge Preview, 랭킹 확인을 입력, 동작, 결과 흐름으로 자세히 풉니다. 권한과 예외 처리도 함께 적습니다.",
+        "user_flow": "사용자는 메인에서 해커톤을 찾고 상세를 본 뒤 개인 참가 또는 팀 모집을 선택합니다. 이후 제출 저장과 Judge Preview를 거쳐 최종 제출을 준비합니다.",
+        "development_plan": "Judge Preview 고도화, 팀 보드 개선, 배포 안정화, PDF 마감 대응 같은 후속 계획을 우선순위와 일정 기준으로 설명합니다."
+      },
+      "meta": {
+        "extensionIdea": "제출 전 감점 위험을 줄이는 Judge Preview를 팀 고유 확장 기능으로 제안하고, 문서와 웹의 메시지를 맞추는 self-audit 경험을 상세히 설명합니다.",
+        "verificationPlan": "심사자는 공개 URL에 접속해 메인, 상세, Camp, 팀 보드, 제출 저장, Judge Preview, PDF 흐름을 순서대로 확인합니다. 별도 키는 필요 없습니다.",
+        "checklist": {
+          "dataDrivenRendering": false,
+          "filterSortWorking": false,
+          "emptyStateReady": false,
+          "responsiveReady": false,
+          "errorHandlingReady": false,
+          "loadingReady": false,
+          "accessibilityReady": false,
+          "reviewerAccessReady": true,
+          "noSecretExposure": true,
+          "publicUrlReady": true,
+          "pdfReady": true
+        }
+      },
+      "expect": {
+        "minTotal": 35,
+        "maxTotal": 70,
+        "mustIncludeImprovements": [
+          "오류/예외 처리",
+          "반응형"
+        ],
+        "mustHaveBadChecks": [
+          "필터/정렬 동작 점검",
+          "반응형 점검"
+        ]
+      }
+    },
+    {
+      "id": "ready",
+      "label": "문서와 구현 self-check가 모두 채워진 저장본",
+      "submission": {
+        "project_title": "Ready For Review",
+        "team_participants": "Frontend, Designer, PM",
+        "service_overview": "해커톤 참가자가 명세서를 빠르게 이해하고, 팀 모집과 제출 준비를 한 흐름 안에서 이어갈 수 있도록 포털을 제공합니다. 공개 URL만으로 심사자가 핵심 기능을 재현할 수 있고, 팀 보드와 Judge Preview를 통해 준비 상태를 스스로 점검할 수 있습니다. 서비스 가치와 심사자 경험을 함께 강조합니다.",
+        "page_composition": "메인, 해커톤 목록, 상세, Camp 전체 모집 보드, 해커톤별 모집 보드, 팀 보드, 랭킹, MyPage의 역할을 세부적으로 설명합니다. 각 화면에서 어떤 데이터를 보여주고 어떤 CTA로 다음 단계로 이동하는지까지 적습니다. 빈 상태와 권한 상태도 별도로 설명합니다.",
+        "system_composition": "Next.js App Router, API route, 더미 데이터와 Supabase 공유 상태, 세션 인증, 공개 프로필 제어, Vercel 배포 구조를 자세히 설명합니다. 입력 데이터가 어떤 API를 거쳐 저장되고, Judge Preview가 어떤 기준으로 다시 읽어 점수화하는지도 함께 설명합니다.",
+        "core_function_spec": "탐색, 팀 모집, 합류 문의, 팀 보드, 제출 저장, Judge Preview, 랭킹을 입력, 동작, 결과 관점으로 구체적으로 작성합니다. 특히 데이터 기반 렌더링, 필터/정렬, 빈 상태, 권한 체크, 오류 메시지, 배포 검증 흐름까지 포함해 실제 구현 범위가 읽히도록 적습니다.",
+        "user_flow": "사용자는 메인에서 해커톤을 찾고, 상세에서 팀 모집 또는 개인 참가를 선택하며, Camp에서 팀을 찾거나 직접 모집글을 작성합니다. 이후 팀 보드에서 상태를 관리하고 제출 개요를 저장한 뒤 Judge Preview로 부족한 항목을 보완합니다. 마지막으로 공개 URL과 PDF를 제출하기 전 랭킹과 내 활동을 다시 점검합니다.",
+        "development_plan": "Judge Preview 고도화, 팀 보드 확장, 멤버십 모델 추가, 운영 안정성 개선, PDF 완성도 향상을 단계별 우선순위와 일정으로 설명합니다. 각 단계에서 무엇을 검증하고 어떤 위험을 줄일지까지 적습니다."
+      },
+      "meta": {
+        "extensionIdea": "Judge Preview를 팀 고유 확장 기능으로 삼아, 실제 심사표에 맞춘 self-audit과 제출 패키지 점검을 하나의 흐름으로 묶습니다. 단순 길이 체크가 아니라 데이터 렌더링, 반응형, 오류 처리, 심사자 재현성까지 점검하는 실용적 확장 포인트임을 구체적으로 설명합니다.",
+        "verificationPlan": "심사자는 공개 배포 URL에 접속해 메인, 해커톤 상세, Camp 전체/해커톤별 보드, 팀 보드, 제출 저장, Judge Preview, PDF 제출 준비 흐름을 순서대로 확인하면 됩니다. 로그인은 일반 회원가입으로 가능하며 별도 비밀 키는 필요 없습니다. 핵심 검증 포인트와 실패 시 메시지까지 함께 적어 재현성을 높입니다.",
+        "checklist": {
+          "dataDrivenRendering": true,
+          "filterSortWorking": true,
+          "emptyStateReady": true,
+          "responsiveReady": true,
+          "errorHandlingReady": true,
+          "loadingReady": true,
+          "accessibilityReady": true,
+          "reviewerAccessReady": true,
+          "noSecretExposure": true,
+          "publicUrlReady": true,
+          "pdfReady": true
+        }
+      },
+      "expect": {
+        "minTotal": 75,
+        "maxTotal": 100,
+        "mustIncludeStrengths": [
+          "기본 구현 근거",
+          "문서와 재현성 근거"
+        ],
+        "mustHaveOkChecks": [
+          "데이터 기반 렌더링 점검",
+          "공개 배포 URL 준비",
+          "PDF 제출물 준비"
+        ]
+      }
+    }
+  ]
+}
