@@ -1168,6 +1168,15 @@ h3 {
   gap: 8px;
 }
 
+.turnstile-field {
+  display: grid;
+  gap: 8px;
+}
+
+.turnstile-field > div {
+  min-height: 66px;
+}
+
 .stack-form input,
 .stack-form textarea,
 .stack-form select,

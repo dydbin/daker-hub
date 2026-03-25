@@ -1,11 +1,17 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+import { buildRateLimitHeaders, consumeRateLimit } from "@/lib/request-protection";
 import { createTeam, listTeams, requestTeamJoin } from "@/lib/store";
 import { isUuid } from "@/lib/uuid";
 import { getViewerSession } from "@/lib/visitor";
 
 export const runtime = "nodejs";
+
+const APPLY_RATE_LIMIT = {
+  limit: 10,
+  windowMs: 1000 * 60 * 10
+};
 
 export async function POST(request) {
   const cookieStore = await cookies();
@@ -14,7 +20,23 @@ export async function POST(request) {
     return NextResponse.json({ error: "참가 신청은 로그인 후 사용할 수 있습니다." }, { status: 401 });
   }
 
-  const payload = await request.json();
+  const rateLimit = consumeRateLimit({
+    request,
+    bucket: "apply-write",
+    limit: APPLY_RATE_LIMIT.limit,
+    windowMs: APPLY_RATE_LIMIT.windowMs,
+    subject: session.userId
+  });
+  if (!rateLimit.ok) {
+    return NextResponse.json({ error: "참가 신청 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요." }, { status: 429, headers: buildRateLimitHeaders(rateLimit) });
+  }
+
+  let payload;
+  try {
+    payload = await request.json();
+  } catch {
+    return NextResponse.json({ error: "잘못된 요청 형식입니다." }, { status: 400 });
+  }
   const mode = payload.mode === "join" ? "join" : "solo";
 
   const teamId = String(payload.teamId ?? "").trim();

@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
+import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { MESSAGE_INPUT_LIMITS, SUBMISSION_INPUT_LIMITS, TEAM_INPUT_LIMITS } from "@/lib/content-limits";
+
 const BLANK_SUBMISSION_FORM = {
   projectTitle: "",
   teamParticipants: "",
@@ -208,17 +211,18 @@ export function TeamCreateForm({ defaultHackathonSlug = "", hackathonOptions = [
         </label>
         <label>
           <span>팀명</span>
-          <input value={form.name} onChange={(event) => update("name", event.target.value)} required />
+          <input value={form.name} onChange={(event) => update("name", event.target.value)} maxLength={TEAM_INPUT_LIMITS.name} required />
         </label>
         <label>
           <span>팀 소개</span>
-          <textarea value={form.intro} onChange={(event) => update("intro", event.target.value)} rows={4} required />
+          <textarea value={form.intro} onChange={(event) => update("intro", event.target.value)} rows={4} maxLength={TEAM_INPUT_LIMITS.intro} required />
         </label>
         <label>
           <span>모집 포지션</span>
           <input
             value={form.lookingFor}
             onChange={(event) => update("lookingFor", event.target.value)}
+            maxLength={TEAM_INPUT_LIMITS.lookingFor}
             placeholder="Frontend, Designer"
           />
         </label>
@@ -238,7 +242,12 @@ export function TeamCreateForm({ defaultHackathonSlug = "", hackathonOptions = [
         </label>
         <label>
           <span>외부 연락 링크</span>
-          <input value={form.contactUrl} onChange={(event) => update("contactUrl", event.target.value)} placeholder="https://open.kakao.com/..." />
+          <input
+            value={form.contactUrl}
+            onChange={(event) => update("contactUrl", event.target.value)}
+            maxLength={TEAM_INPUT_LIMITS.contactUrl}
+            placeholder="https://open.kakao.com/..."
+          />
         </label>
         <button className="button" disabled={isPending} type="submit">
           {isPending ? "저장 중..." : "팀 모집글 저장"}
@@ -328,15 +337,15 @@ export function TeamEditForm({
             </label>
             <label>
               <span>팀명</span>
-              <input value={form.name} onChange={(event) => update("name", event.target.value)} required />
+              <input value={form.name} onChange={(event) => update("name", event.target.value)} maxLength={TEAM_INPUT_LIMITS.name} required />
             </label>
             <label>
               <span>팀 소개</span>
-              <textarea value={form.intro} onChange={(event) => update("intro", event.target.value)} rows={4} required />
+              <textarea value={form.intro} onChange={(event) => update("intro", event.target.value)} rows={4} maxLength={TEAM_INPUT_LIMITS.intro} required />
             </label>
             <label>
               <span>모집 포지션</span>
-              <input value={form.lookingFor} onChange={(event) => update("lookingFor", event.target.value)} />
+              <input value={form.lookingFor} onChange={(event) => update("lookingFor", event.target.value)} maxLength={TEAM_INPUT_LIMITS.lookingFor} />
             </label>
             <label>
               <span>목표 팀원 수</span>
@@ -348,7 +357,12 @@ export function TeamEditForm({
             </label>
             <label>
               <span>외부 연락 링크</span>
-              <input value={form.contactUrl} onChange={(event) => update("contactUrl", event.target.value)} placeholder="https://open.kakao.com/..." />
+              <input
+                value={form.contactUrl}
+                onChange={(event) => update("contactUrl", event.target.value)}
+                maxLength={TEAM_INPUT_LIMITS.contactUrl}
+                placeholder="https://open.kakao.com/..."
+              />
             </label>
             <label>
               <span>모집 상태</span>
@@ -409,19 +423,31 @@ export function MessageForm({ teamId }) {
   const router = useRouter();
   const [body, setBody] = useState("");
   const [message, setMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [isPending, startTransition] = useTransition();
+  const turnstileEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 
   function onSubmit(event) {
     event.preventDefault();
     if (!body.trim()) return;
     setMessage("");
 
+    if (turnstileEnabled && !turnstileToken) {
+      setMessage("보안 확인이 끝나면 다시 시도해 주세요.");
+      return;
+    }
+
     startTransition(async () => {
       const response = await submitJson("/api/messages", {
         teamId,
-        body
+        body,
+        turnstileToken
       });
       const payload = await response.json();
+      if (turnstileEnabled) {
+        setTurnstileResetKey((current) => current + 1);
+      }
       if (!response.ok) {
         setMessage(payload.error ?? "문의 전송에 실패했습니다.");
         return;
@@ -435,7 +461,14 @@ export function MessageForm({ teamId }) {
 
   return (
     <form className="inline-form" onSubmit={onSubmit}>
-      <textarea value={body} onChange={(event) => setBody(event.target.value)} rows={3} placeholder="팀에 남길 문의 내용을 적으세요." />
+      <textarea
+        value={body}
+        onChange={(event) => setBody(event.target.value)}
+        rows={3}
+        maxLength={MESSAGE_INPUT_LIMITS.body}
+        placeholder="팀에 남길 문의 내용을 적으세요."
+      />
+      <TurnstileWidget onTokenChange={setTurnstileToken} resetKey={turnstileResetKey} />
       <button className="button button--ghost" disabled={isPending} type="submit">
         {isPending ? "전송 중..." : "문의 남기기"}
       </button>
@@ -512,7 +545,7 @@ export function SubmissionForm({ hackathonSlug, savedSubmissions = [], linkedTea
       ) : null}
       <label>
         <span>프로젝트 제목</span>
-        <input value={form.projectTitle} onChange={(event) => update("projectTitle", event.target.value)} required />
+        <input value={form.projectTitle} onChange={(event) => update("projectTitle", event.target.value)} maxLength={SUBMISSION_INPUT_LIMITS.projectTitle} required />
       </label>
       {linkedTeam ? (
         <label>
@@ -528,32 +561,32 @@ export function SubmissionForm({ hackathonSlug, savedSubmissions = [], linkedTea
       ) : (
         <label>
           <span>팀/참여자</span>
-          <input value={form.teamParticipants} onChange={(event) => update("teamParticipants", event.target.value)} required />
+          <input value={form.teamParticipants} onChange={(event) => update("teamParticipants", event.target.value)} maxLength={SUBMISSION_INPUT_LIMITS.teamParticipants} required />
         </label>
       )}
       <label>
         <span>서비스 개요</span>
-        <textarea value={form.serviceOverview} onChange={(event) => update("serviceOverview", event.target.value)} rows={3} />
+        <textarea value={form.serviceOverview} onChange={(event) => update("serviceOverview", event.target.value)} rows={3} maxLength={SUBMISSION_INPUT_LIMITS.serviceOverview} />
       </label>
       <label>
         <span>페이지 구성</span>
-        <textarea value={form.pageComposition} onChange={(event) => update("pageComposition", event.target.value)} rows={3} />
+        <textarea value={form.pageComposition} onChange={(event) => update("pageComposition", event.target.value)} rows={3} maxLength={SUBMISSION_INPUT_LIMITS.pageComposition} />
       </label>
       <label>
         <span>시스템 구성</span>
-        <textarea value={form.systemComposition} onChange={(event) => update("systemComposition", event.target.value)} rows={3} />
+        <textarea value={form.systemComposition} onChange={(event) => update("systemComposition", event.target.value)} rows={3} maxLength={SUBMISSION_INPUT_LIMITS.systemComposition} />
       </label>
       <label>
         <span>핵심 기능 명세</span>
-        <textarea value={form.coreFunctionSpec} onChange={(event) => update("coreFunctionSpec", event.target.value)} rows={4} />
+        <textarea value={form.coreFunctionSpec} onChange={(event) => update("coreFunctionSpec", event.target.value)} rows={4} maxLength={SUBMISSION_INPUT_LIMITS.coreFunctionSpec} />
       </label>
       <label>
         <span>유저 플로우</span>
-        <textarea value={form.userFlow} onChange={(event) => update("userFlow", event.target.value)} rows={3} />
+        <textarea value={form.userFlow} onChange={(event) => update("userFlow", event.target.value)} rows={3} maxLength={SUBMISSION_INPUT_LIMITS.userFlow} />
       </label>
       <label>
         <span>개발 및 개선 계획</span>
-        <textarea value={form.developmentPlan} onChange={(event) => update("developmentPlan", event.target.value)} rows={3} />
+        <textarea value={form.developmentPlan} onChange={(event) => update("developmentPlan", event.target.value)} rows={3} maxLength={SUBMISSION_INPUT_LIMITS.developmentPlan} />
       </label>
       <label>
         <span>팀 고유 확장 기능 / UX 개선</span>
@@ -561,6 +594,7 @@ export function SubmissionForm({ hackathonSlug, savedSubmissions = [], linkedTea
           value={form.extensionIdea}
           onChange={(event) => update("extensionIdea", event.target.value)}
           rows={3}
+          maxLength={SUBMISSION_INPUT_LIMITS.extensionIdea}
           placeholder="Judge Preview처럼 우리 팀만의 확장 기능과 실용성을 구체적으로 적으세요."
         />
       </label>
@@ -570,6 +604,7 @@ export function SubmissionForm({ hackathonSlug, savedSubmissions = [], linkedTea
           value={form.verificationPlan}
           onChange={(event) => update("verificationPlan", event.target.value)}
           rows={3}
+          maxLength={SUBMISSION_INPUT_LIMITS.verificationPlan}
           placeholder="심사자가 어떤 순서로 URL, 주요 화면, 제출물, 검증 포인트를 확인하면 되는지 적으세요."
         />
       </label>

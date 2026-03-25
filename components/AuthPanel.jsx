@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
+import { TurnstileWidget } from "@/components/TurnstileWidget";
+import { AUTH_INPUT_LIMITS } from "@/lib/content-limits";
+
 function submitJson(url, body) {
   return fetch(url, {
     method: "POST",
@@ -18,6 +21,8 @@ export function AuthPanel({ mode = "login", returnTo = "/mypage" }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [form, setForm] = useState({
     displayName: "",
     email: "",
@@ -33,6 +38,7 @@ export function AuthPanel({ mode = "login", returnTo = "/mypage" }) {
     ? "로그인 후 팀 모집, 문의, 제출 저장 같은 작성 기능을 사용할 수 있습니다."
     : "계정을 만들면 바로 로그인되고, 내 프로필과 비공개 설정을 이어서 관리할 수 있습니다.";
   const headline = isLogin ? "대회 참여 전용 계정으로 바로 이어서 작업합니다." : "해커톤 활동을 저장하고 팀 단위로 안전하게 관리합니다.";
+  const turnstileEnabled = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
 
   function update(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -42,20 +48,30 @@ export function AuthPanel({ mode = "login", returnTo = "/mypage" }) {
     event.preventDefault();
     setMessage("");
 
+    if (turnstileEnabled && !turnstileToken) {
+      setMessage("보안 확인이 끝나면 다시 시도해 주세요.");
+      return;
+    }
+
     startTransition(async () => {
       const payload = isLogin
         ? {
             email: form.email,
-            password: form.password
+            password: form.password,
+            turnstileToken
           }
         : {
             displayName: form.displayName,
             email: form.email,
-            password: form.password
+            password: form.password,
+            turnstileToken
           };
 
       const response = await submitJson(submitUrl, payload);
       const result = await response.json();
+      if (turnstileEnabled) {
+        setTurnstileResetKey((current) => current + 1);
+      }
       if (!response.ok) {
         setMessage(result.error ?? `${submitLabel}에 실패했습니다.`);
         return;
@@ -114,20 +130,39 @@ export function AuthPanel({ mode = "login", returnTo = "/mypage" }) {
             </div>
 
             <form className="stack-form auth-form" onSubmit={onSubmit}>
-            {!isLogin ? (
+              {!isLogin ? (
+                <label>
+                  <span>닉네임</span>
+                  <input
+                    value={form.displayName}
+                    onChange={(event) => update("displayName", event.target.value)}
+                    maxLength={AUTH_INPUT_LIMITS.displayName}
+                    required
+                  />
+                </label>
+              ) : null}
               <label>
-                <span>닉네임</span>
-                <input value={form.displayName} onChange={(event) => update("displayName", event.target.value)} maxLength={24} required />
+                <span>계정 이메일</span>
+                <input
+                  value={form.email}
+                  onChange={(event) => update("email", event.target.value)}
+                  type="email"
+                  maxLength={AUTH_INPUT_LIMITS.email}
+                  required
+                />
               </label>
-            ) : null}
-            <label>
-              <span>계정 이메일</span>
-              <input value={form.email} onChange={(event) => update("email", event.target.value)} type="email" required />
-            </label>
-            <label>
-              <span>비밀번호</span>
-              <input value={form.password} onChange={(event) => update("password", event.target.value)} minLength={8} type="password" required />
+              <label>
+                <span>비밀번호</span>
+                <input
+                  value={form.password}
+                  onChange={(event) => update("password", event.target.value)}
+                  minLength={8}
+                  maxLength={AUTH_INPUT_LIMITS.password}
+                  type="password"
+                  required
+                />
               </label>
+              <TurnstileWidget onTokenChange={setTurnstileToken} resetKey={turnstileResetKey} />
               <button className="button auth-form__submit" disabled={isPending} type="submit">
                 {isPending ? "처리 중..." : submitLabel}
               </button>
@@ -138,10 +173,10 @@ export function AuthPanel({ mode = "login", returnTo = "/mypage" }) {
               <Link href={altHref}>{altLabel}</Link>
             </div>
 
-          <div className="auth-panel__notes">
-            <p className="small-note">지금은 계정 이메일/비밀번호 기반 로그인만 지원합니다.</p>
-            <p className="small-note">공용 연락은 로그인 이메일과 분리해서 `MyPage`에서 따로 설정할 수 있습니다.</p>
-          </div>
+            <div className="auth-panel__notes">
+              <p className="small-note">지금은 계정 이메일/비밀번호 기반 로그인만 지원합니다.</p>
+              <p className="small-note">공용 연락은 로그인 이메일과 분리해서 `MyPage`에서 따로 설정할 수 있습니다.</p>
+            </div>
 
             {message ? <p className="inline-message">{message}</p> : null}
           </div>
