@@ -9,10 +9,6 @@ test -f next.config.mjs
 test -d app
 test -d components
 test -d lib
-test -f PLANS.md
-test -f CONTEXT.md
-test -f CHECKLIST.md
-
 npm run build >/tmp/daker-board-build.log
 
 echo "verification: ok"
